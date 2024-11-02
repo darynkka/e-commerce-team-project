@@ -47,4 +47,5 @@
 // function saveCartItemsToLocalStorage()
 // function saveProductsToLocalStorage()
 // function searchProductbyName(name)
+// maybe search also in cart and favourites
 // // functions for filter by name, price, description, category
