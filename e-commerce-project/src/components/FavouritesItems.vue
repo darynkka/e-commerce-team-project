@@ -54,3 +54,4 @@ const favorites = ref<Product[]>([])
   color: #0d6efd;
 }
 </style>
+<!-- hcsdhuv -->

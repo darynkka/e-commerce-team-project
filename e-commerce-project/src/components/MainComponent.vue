@@ -1,14 +1,3 @@
-<!-- src/components/MainComponent -->
-<!-- <template>
-  <div>
-    <app-navigation></app-navigation>
-    <router-view></router-view>
-  </div>
-</template>
-<script setup lang="ts">
-import AppNavigation from './AppNavigation.vue'
-</script> -->
-
 <template>
   <div class="container my-5">
     <div class="row">
@@ -20,47 +9,22 @@ import AppNavigation from './AppNavigation.vue'
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import ProductCard from '@/components/ProductCard.vue'
 import { Product } from '@/API/ProductInterface'
 
-//просто приклад застосування карточки продукту
-const products = ref<Product[]>([
-  {
-    id: 1,
-    title: 'Fjallraven - Foldsack No. 1 Backpack',
-    price: 109.95,
-    description:
-      'Your perfect pack for everyday use and walks in the forest. Stash your laptop (up to 15 inches) in the padded sleeve, your everyday',
-    category: "men's clothing",
-    image: 'https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg',
-  },
-  {
-    id: 1,
-    title: 'Fjallraven - Foldsack No. 1 Backpack',
-    price: 109.95,
-    description:
-      'Your perfect pack for everyday use and walks in the forest. Stash your laptop (up to 15 inches) in the padded sleeve, your everyday',
-    category: "men's clothing",
-    image: 'https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg',
-  },
-  {
-    id: 1,
-    title: 'Fjallraven - Foldsack No. 1 Backpack',
-    price: 109.95,
-    description:
-      'Your perfect pack for everyday use and walks in the forest. Stash your laptop (up to 15 inches) in the padded sleeve, your everyday',
-    category: "men's clothing",
-    image: 'https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg',
-  },
-  {
-    id: 1,
-    title: 'Fjallraven - Foldsack No. 1 Backpack',
-    price: 109.95,
-    description:
-      'Your perfect pack for everyday use and walks in the forest. Stash your laptop (up to 15 inches) in the padded sleeve, your everyday',
-    category: "men's clothing",
-    image: 'https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg',
-  },
-])
+const products = ref<Product[]>([])
+
+onMounted(async () => {
+  //просто приклад застосування карточки продукту щоб побачити як вони виглядають
+  try {
+    const response = await fetch(
+      'https://api.escuelajs.co/api/v1/products?limit',
+    )
+    const data = await response.json()
+    products.value = data.slice(0, 5)
+  } catch (error) {
+    console.error('Error fetching products:', error)
+  }
+})
 </script>
