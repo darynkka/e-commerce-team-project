@@ -1,8 +1,11 @@
-<!-- src/components/ProductCard.vue list item (card of product: name, price, image, etc.) -->
 <template>
   <div class="card product-card h-100">
     <div class="position-relative">
-      <img :src="product.image" class="card-img-top p-3" :alt="product.title" />
+      <img
+        :src="product.images[0]"
+        class="card-img-top p-3"
+        :alt="product.title"
+      />
       <button class="btn btn-light btn-favorite" @click="toggleFavorite">
         <i
           class="bi"
@@ -10,10 +13,9 @@
         ></i>
       </button>
     </div>
-
     <div class="card-body d-flex flex-column">
       <h5 class="card-title text-truncate">{{ product.title }}</h5>
-      <p class="card-text text-muted small mb-2">{{ product.category }}</p>
+      <p class="card-text text-muted small mb-2">{{ product.category.name }}</p>
       <p class="card-text description-text">{{ product.description }}</p>
       <div class="mt-auto">
         <div class="d-flex justify-content-between align-items-center">
