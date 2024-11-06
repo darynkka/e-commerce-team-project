@@ -1,3 +1,4 @@
+// src/router/index.ts
 import { createRouter, createWebHistory } from 'vue-router'
 import FavouritesItems from '@/components/FavouritesItems.vue'
 import ShoppingCart from '@/components/ShoppingCart.vue'
@@ -17,7 +18,7 @@ const router = createRouter({
       component: ShoppingCart,
     },
     {
-      path: '/favourites-items',
+      path: '/favourites',
       name: 'favourites-items',
       component: FavouritesItems,
     },
