@@ -1,5 +1,4 @@
-// initialize and write the body of the functions
-
+// // initialize and write the body of the functions
 // const productTemplate = {
 //     id: null,
 //     title: '',
