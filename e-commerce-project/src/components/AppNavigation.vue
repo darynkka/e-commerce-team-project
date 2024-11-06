@@ -72,3 +72,7 @@
   font-size: 0.7rem;
 }
 </style>
+<script setup lang="ts">
+const a = 'try to do commit'
+console.log(a)
+</script>
