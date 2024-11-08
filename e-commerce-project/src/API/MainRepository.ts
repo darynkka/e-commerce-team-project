@@ -1,4 +1,4 @@
-// // initialize and write the body of the functions
+// initialize and write the body of the functions
 
 // const productTemplate = {
 //     id: null,
@@ -13,29 +13,36 @@
 //     images: []
 // };
 
-// const favourites = [];
+// const favourites = [];  
 // const cart = [];
-// const products = [];
 
-// // function addProductToArray(product) {
-// //     const newProduct = {
-// //         id: product.id,
-// //         title: product.title,
-// //         price: product.price,
-// //         description: product.description,
-// //         category: {
-// //             id: product.category.id,
-// //             name: product.category.name,
-// //             image: product.category.image
-// //         },
-// //         images: [...product.images]
-// //     };
+// const products = ref<Product[]>([]);
 
-// //     products.push(newProduct);
-// // } - це шаблон, по ній можна передавати який це масив крім передачі продукту і так додавати універсально
-// // або до корзини або до улюблених або до списку продуктів на сторінці
+// function addProductToArray(array: Product[], product: Product) {
+//     const newProduct = {
+//         id: product.id,
+//         title: product.title,
+//         price: product.price,
+//         description: product.description,
+//         category: {
+//             id: product.category.id,
+//             name: product.category.name,
+//             image: product.category.image
+//         },
+//         images: [...product.images]
+//     };
 
-// function fetchProducts()
+//     array.push(newProduct);
+// }
+//це шаблон, по ній можна передавати який це масив крім передачі продукту і так додавати універсально
+// або до корзини або до улюблених або до списку продуктів на сторінці
+
+
+
+
+
+
+
 // function getAllFavourites()
 // function getAllCartItems()
 // function deleteFavouriteItem(id)
