@@ -1,12 +1,14 @@
 // call functions that belongs to product list &   API functions
 // export this file in components ProductCard.vue, MainComponent.vue
 
+
+//ПОВЕРТАЮ ПОКИ ЩО КОЖНУ ФУНКЦІЮ, ДАЛІ УЗГДОДИМ ЯК ЦЕ РОЗУМНО ЗРОБИТИ
 import type { Product } from './ProductInterface'
 import axios from 'axios'
 
 const BASE_URL = 'https://api.escuelajs.co/api/v1/products';
 
-export const getAllProducts = async (offset = 0, limit = 10): Promise<Product[]> => {
+export const getAllProducts = async (offset = 0, limit = 20): Promise<Product[]> => {
     try {
         const response = await axios.get<Product[]>(`${BASE_URL}?offset=${offset}&limit=${limit}`);
         
@@ -36,3 +38,4 @@ export const getAllProducts = async (offset = 0, limit = 10): Promise<Product[]>
         return [];
     }
 };
+
