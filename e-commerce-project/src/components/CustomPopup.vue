@@ -96,7 +96,7 @@ const props = defineProps<{
 const emit = defineEmits(['close', 'updateCart'])
 
 // const cartItems = ref<CartItem[]>([]) //типу тут зберігаю товари для корзини
-
+//
 //слікує за додаванням нових товарів
 // watch(
 //   () => props.lastAddedItem,
