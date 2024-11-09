@@ -20,7 +20,7 @@
       <div class="mt-auto">
         <div class="d-flex justify-content-between align-items-center">
           <span class="price">${{ product.price }}</span>
-          <button class="btn btn-primary">
+          <button class="btn btn-primary" @click="addToCart">
             <i class="bi bi-cart-plus"></i> Add to Cart
           </button>
         </div>
@@ -37,10 +37,16 @@ const props = defineProps<{
   product: Product
 }>()
 
+const emit = defineEmits(['addToCart'])
+
 const isFavorite = ref(false)
 
 const toggleFavorite = () => {
   isFavorite.value = !isFavorite.value
+}
+
+const addToCart = () => {
+  emit('addToCart', props.product)
 }
 </script>
 
