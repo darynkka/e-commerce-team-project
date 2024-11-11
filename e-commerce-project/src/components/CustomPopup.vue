@@ -9,10 +9,10 @@
       <div class="popup-body">
         <div class="cart-summary">
           <div class="cart-items">
-            <template v-if="cartItems.length > 0">
+            <template v-if="cartStore.items.length > 0">
               <h6 class="mb-3">Cart Items</h6>
               <div
-                v-for="item in cartItems"
+                v-for="item in cartStore.items"
                 :key="item.id"
                 class="cart-item mb-3"
               >
@@ -28,7 +28,7 @@
                     <h6 class="item-title">{{ item.title }}</h6>
                     <button
                       class="btn btn-sm btn-delete"
-                      @click="removeItem(item)"
+                      @click="removeFromCart(item.id)"
                       title="Remove item"
                     >
                       <i class="bi bi-trash"></i>
@@ -59,10 +59,10 @@
             <div v-else class="text-center py-4">Your cart is empty</div>
           </div>
 
-          <div class="cart-total mt-4" v-if="cartItems.length > 0">
+          <div class="cart-total mt-4" v-if="cartStore.items.length > 0">
             <div class="d-flex justify-content-between mb-2">
               <span>Subtotal:</span>
-              <span>${{ calculateTotal().toFixed(2) }}</span>
+              <span>${{ cartStore.total }}</span>
             </div>
             <router-link
               to="/shopping-cart"
@@ -84,10 +84,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { useCartStore } from '@/API/ShoppingCart'
 import type { Product } from '@/API/ProductInterface'
-import type { CartItem } from '@/API/ProductInterface'
 
+const cartStore = useCartStore()
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const props = defineProps<{
   isVisible: boolean
   lastAddedItem: Product | null
@@ -95,55 +97,25 @@ const props = defineProps<{
 
 const emit = defineEmits(['close', 'updateCart'])
 
-// const cartItems = ref<CartItem[]>([]) //типу тут зберігаю товари для корзини
-//
-//слікує за додаванням нових товарів
-// watch(
-//   () => props.lastAddedItem,
-//   newItem => {
-//     if (newItem) {
-//       addItemToCart(newItem)
-//     }
-//   },
-// )
-
-// const addItemToCart = (item: Product) => {
-//   const existingItem = cartItems.value.find(i => i.id === item.id)
-
-//   if (existingItem) {
-//     existingItem.quantity++
-//   } else {
-//     cartItems.value.push({ ...item, quantity: 1 })
-//   }
-
-//   emit('updateCart', cartItems.value)
-// }
-
-// const incrementQuantity = (item: CartItem) => {
-//   item.quantity++
-//   emit('updateCart', cartItems.value)
-// }
-
-// const decrementQuantity = (item: CartItem) => {
-//   if (item.quantity > 1) {
-//     item.quantity--
-//     emit('updateCart', cartItems.value)
-//   }
-// }
-
-// const removeItem = (item: CartItem) => {
-//   cartItems.value = cartItems.value.filter(i => i.id !== item.id)
-//   emit('updateCart', cartItems.value)
-// }
-
-// const calculateTotal = () => {
-//   return cartItems.value.reduce((total, item) => {
-//     return total + item.price * item.quantity
-//   }, 0)
-// }
-
 const close = () => {
   emit('close')
+}
+
+const removeFromCart = (id: number) => {
+  cartStore.removeItem(id)
+  emit('updateCart')
+}
+
+const incrementQuantity = (item: Product & { quantity: number }) => {
+  cartStore.updateQuantity(item.id, item.quantity + 1)
+  emit('updateCart')
+}
+
+const decrementQuantity = (item: Product & { quantity: number }) => {
+  if (item.quantity > 1) {
+    cartStore.updateQuantity(item.id, item.quantity - 1)
+    emit('updateCart')
+  }
 }
 </script>
 

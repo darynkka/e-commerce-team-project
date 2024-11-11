@@ -30,8 +30,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed } from 'vue'
 import type { Product } from '@/API/ProductInterface'
+import { useFavouritesStore } from '@/API/Favourites'
 
 const props = defineProps<{
   product: Product
@@ -39,12 +40,24 @@ const props = defineProps<{
 
 const emit = defineEmits(['addToCart'])
 
-const isFavorite = ref(false)
+// Використання favouritesStore
+const favouritesStore = useFavouritesStore()
 
+// Перевірка, чи товар у списку улюблених
+const isFavorite = computed(() =>
+  favouritesStore.items.some(item => item.id === props.product.id),
+)
+
+// Додавання та видалення товару з улюблених
 const toggleFavorite = () => {
-  isFavorite.value = !isFavorite.value
+  if (isFavorite.value) {
+    favouritesStore.removeItem(props.product.id)
+  } else {
+    favouritesStore.addItem(props.product)
+  }
 }
 
+// Додавання товару в кошик
 const addToCart = () => {
   emit('addToCart', props.product)
 }

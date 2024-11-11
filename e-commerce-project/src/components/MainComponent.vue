@@ -66,7 +66,11 @@
         v-for="product in paginatedProducts"
         :key="product.id"
       >
-        <ProductCard :product="product" @add-to-cart="handleAddToCart" />
+        <ProductCard
+          :product="product"
+          @add-to-cart="handleAddToCart"
+          @add-to-favourites="handleAddToFavourites"
+        />
       </div>
     </div>
 
@@ -88,16 +92,27 @@ import ProductCard from '@/components/ProductCard.vue'
 import Pagination from '@/components/PaginationComponent.vue'
 import CustomPopup from '@/components/CustomPopup.vue'
 import { useProductStore } from '../API/Store'
+import { useCartStore } from '../API/ShoppingCart'
+import { useFavouritesStore } from '../API/Favourites'
+import type { Product } from '@/API/ProductInterface'
 
 const productStore = useProductStore()
+const cartStore = useCartStore()
+const favouritesStore = useFavouritesStore()
+
+// Initialize stores from localStorage
+onMounted(() => {
+  cartStore.loadFromStorage()
+  favouritesStore.loadFromStorage()
+})
+
 const searchName = ref('')
 const selectedCategory = ref('')
 const priceFrom = ref('')
 const priceTo = ref('')
 const currentPage = ref(1)
-const itemsPerPage = ref(9) //буде по 9 товарів на одну сторінку
-
-const originalProducts = ref([]) //зберігає початковий список продуктів для скидання фільтрів без перезавантаження
+const itemsPerPage = ref(9)
+const originalProducts = ref<Product[]>([])
 
 onMounted(async () => {
   await productStore.fetchProducts(35)
@@ -105,23 +120,20 @@ onMounted(async () => {
 })
 
 const uniqueCategories = computed(() => {
-  //тут витягую унікальні категорії з продуктів для випадаючого фільтра категорії
   const categories = originalProducts.value.map(
     product => product.category.name,
   )
   return [...new Set(categories)]
 })
 
-//фільтація за ім'ям
 const handleNameFilter = () => {
   resetToOriginalProducts()
   if (searchName.value) {
     productStore.filterProductsByName(searchName.value)
   }
-  currentPage.value = 1 //gісля кожної фільтрації скидаю пагінацію на першу сторінку
+  currentPage.value = 1
 }
 
-//фільтація за категорією
 const handleCategoryFilter = () => {
   resetToOriginalProducts()
   if (selectedCategory.value) {
@@ -130,7 +142,6 @@ const handleCategoryFilter = () => {
   currentPage.value = 1
 }
 
-//фільтація за ціною
 const handlePriceFilter = () => {
   resetToOriginalProducts()
   if (priceFrom.value && priceTo.value) {
@@ -143,7 +154,6 @@ const handlePriceFilter = () => {
 }
 
 const resetToOriginalProducts = () => {
-  //це щоб перед кожною фільтрацією відновити оригінальний список продуктів, щоб уникнути накладання фільтрів
   productStore.products = [...originalProducts.value]
 }
 
@@ -161,13 +171,11 @@ const totalPages = computed(() =>
 )
 
 const paginatedProducts = computed(() => {
-  //контролює відображення продуктів для поточної сторінки
   const start = (currentPage.value - 1) * itemsPerPage.value
   const end = start + itemsPerPage.value
   return productStore.products.slice(start, end)
 })
 
-//слідкує за змінами сторінок
 watch(currentPage, () => {
   window.scrollTo({ top: 0, behavior: 'smooth' })
 })
@@ -176,8 +184,13 @@ const isPopupVisible = ref(false)
 const lastAddedItem = ref<Product | null>(null)
 
 const handleAddToCart = (product: Product) => {
+  cartStore.addItem(product)
   lastAddedItem.value = product
   isPopupVisible.value = true
+}
+
+const handleAddToFavourites = (product: Product) => {
+  favouritesStore.addItem(product)
 }
 
 const closePopup = () => {
@@ -201,7 +214,6 @@ const closePopup = () => {
   box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
 
-/* Адаптивність */
 @media (max-width: 768px) {
   .d-flex {
     flex-wrap: wrap;

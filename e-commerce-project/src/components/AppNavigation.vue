@@ -23,14 +23,19 @@
               <router-link class="nav-link" to="/favourites-items">
                 <i class="bi bi-heart"></i>
                 <span class="ms-1">Favourites</span>
-                <span class="badge bg-primary rounded-pill ms-1">0</span>
+                <span class="badge bg-primary rounded-pill ms-1">{{
+                  favouritesItemCount
+                }}</span>
               </router-link>
             </li>
+
             <li class="nav-item">
               <router-link class="nav-link" to="/shopping-cart">
                 <i class="bi bi-cart"></i>
                 <span class="ms-1">Cart</span>
-                <span class="badge bg-primary rounded-pill ms-1">0</span>
+                <span class="badge bg-primary rounded-pill ms-1">{{
+                  cartItemCount
+                }}</span>
               </router-link>
             </li>
           </ul>
@@ -43,6 +48,23 @@
     </main>
   </div>
 </template>
+
+<script setup lang="ts">
+import { computed, onMounted } from 'vue'
+import { useCartStore } from '../API/ShoppingCart'
+import { useFavouritesStore } from '../API/Favourites'
+
+const cartStore = useCartStore()
+const favouritesStore = useFavouritesStore()
+
+onMounted(() => {
+  cartStore.loadFromStorage()
+  favouritesStore.loadFromStorage()
+})
+
+const cartItemCount = computed(() => cartStore.itemCount)
+const favouritesItemCount = computed(() => favouritesStore.itemCount)
+</script>
 
 <style scoped>
 .custom-navbar {
