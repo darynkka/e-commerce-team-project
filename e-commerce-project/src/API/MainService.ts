@@ -86,3 +86,11 @@ export class MainService {
     return this.repository.searchProductByName(name)
   }
 }
+
+export const getAllProducts = async (
+  offset = 0,
+  limit = 20,
+): Promise<Product[]> => {
+  const service = new MainService()
+  return service.getAllProducts(offset, limit)
+}
