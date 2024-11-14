@@ -10,7 +10,7 @@
             class="form-control"
             placeholder="Search by name..."
             v-model="searchName"
-            @input="handleNameFilter"
+            @input="handleFilters"
           />
         </div>
       </div>
@@ -19,7 +19,7 @@
         <select
           class="form-select"
           v-model="selectedCategory"
-          @change="handleCategoryFilter"
+          @change="handleFilters"
         >
           <option value="">All Categories</option>
           <option
@@ -40,6 +40,7 @@
             class="form-control me-2"
             placeholder="Min"
             v-model="priceFrom"
+            @change="handleFilters"
           />
           <span class="me-2">-</span>
           <input
@@ -47,7 +48,7 @@
             class="form-control"
             placeholder="Max"
             v-model="priceTo"
-            @change="handlePriceFilter"
+            @change="handleFilters"
           />
         </div>
       </div>
@@ -95,10 +96,16 @@ import { useProductStore } from '../API/Store'
 import { useCartStore } from '../API/ShoppingCart'
 import { useFavouritesStore } from '../API/Favourites'
 import type { Product } from '@/API/ProductInterface'
+import {  useRouter } from 'vue-router'
+
 
 const productStore = useProductStore()
 const cartStore = useCartStore()
 const favouritesStore = useFavouritesStore()
+
+//для url відображення
+const router = useRouter()
+
 
 // Initialize stores from localStorage
 onMounted(() => {
@@ -117,6 +124,9 @@ const originalProducts = ref<Product[]>([])
 onMounted(async () => {
   await productStore.fetchProducts(35)
   originalProducts.value = [...productStore.products]
+
+  //скидання фільтрів при оновленні сторінки
+  resetFilters()
 })
 
 const uniqueCategories = computed(() => {
@@ -126,32 +136,66 @@ const uniqueCategories = computed(() => {
   return [...new Set(categories)]
 })
 
-const handleNameFilter = () => {
-  resetToOriginalProducts()
-  if (searchName.value) {
-    productStore.filterProductsByName(searchName.value)
-  }
-  currentPage.value = 1
-}
+//закоментувла ці функції і зробила одну велику функцію handleFilters, передала її 4 рази у інпути в template
+//Одна функція об'єднує 3 і може фільтрувати відразу за трьома критеріями
+//watch за всім дивиться
 
-const handleCategoryFilter = () => {
+// const handleNameFilter = () => {
+//   resetToOriginalProducts()
+//   if (searchName.value) {
+//     productStore.filterProductsByName(searchName.value)
+//   }
+//   currentPage.value = 1
+//   updateQueryParams()
+// }
+
+// const handleCategoryFilter = () => {
+//   resetToOriginalProducts()
+//   if (selectedCategory.value) {
+//     productStore.filterProductsByCategory(selectedCategory.value)
+//   }
+//   currentPage.value = 1
+//   updateQueryParams()
+// }
+
+// const handlePriceFilter = () => {
+//   resetToOriginalProducts()
+//   if (priceFrom.value && priceTo.value) {
+//     productStore.filterProductByPrice(
+//       Number(priceFrom.value),
+//       Number(priceTo.value),
+//     )
+//   }
+//   currentPage.value = 1
+//   updateQueryParams()
+// }
+
+const handleFilters = () => {
   resetToOriginalProducts()
+  // Фільтрація за ім'ям
+   if (searchName.value) {
+     productStore.filterProductsByName(searchName.value)
+   }
+
+  // Фільтрація за категорією
   if (selectedCategory.value) {
-    productStore.filterProductsByCategory(selectedCategory.value)
+     productStore.filterProductsByCategory(selectedCategory.value)
   }
-  currentPage.value = 1
-}
 
-const handlePriceFilter = () => {
-  resetToOriginalProducts()
+  // Фільтрація за ціною
   if (priceFrom.value && priceTo.value) {
-    productStore.filterProductByPrice(
+     productStore.filterProductByPrice(
       Number(priceFrom.value),
       Number(priceTo.value),
-    )
-  }
+     )
+   }
+
   currentPage.value = 1
+  updateQueryParams()
 }
+
+// виклик функції при зміні будь-якого фільтру
+watch([searchName, selectedCategory, priceFrom, priceTo], handleFilters)
 
 const resetToOriginalProducts = () => {
   productStore.products = [...originalProducts.value]
@@ -164,6 +208,7 @@ const resetFilters = () => {
   priceTo.value = ''
   resetToOriginalProducts()
   currentPage.value = 1
+  updateQueryParams()
 }
 
 const totalPages = computed(() =>
@@ -196,6 +241,21 @@ const handleAddToFavourites = (product: Product) => {
 const closePopup = () => {
   isPopupVisible.value = false
 }
+
+// функція для оновлення запитів у URL
+const updateQueryParams = () => {
+  router.replace({
+    path: '/',
+    query: {
+      name: searchName.value || undefined,
+      category: selectedCategory.value || undefined,
+      from: priceFrom.value || undefined,
+      to: priceTo.value || undefined,
+    },
+  })
+}
+
+
 </script>
 
 <style scoped>
