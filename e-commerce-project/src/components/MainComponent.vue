@@ -125,8 +125,6 @@ onMounted(async () => {
   await productStore.fetchProducts(35)
   originalProducts.value = [...productStore.products]
 
-  //скидання фільтрів при оновленні сторінки
-  resetFilters()
 })
 
 const uniqueCategories = computed(() => {
@@ -134,6 +132,7 @@ const uniqueCategories = computed(() => {
     product => product.category.name,
   )
   return [...new Set(categories)]
+
 })
 
 //закоментувла ці функції і зробила одну велику функцію handleFilters, передала її 4 рази у інпути в template
