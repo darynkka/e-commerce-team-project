@@ -1,7 +1,7 @@
 // MainService.ts
 import axios from 'axios'
 import { MainRepository } from './MainRepository'
-import type { Product, CartItem } from '@/API/ProductInterface'
+import type { Product, CartItem } from '@/types/ProductInterface'
 
 const BASE_URL = 'https://api.escuelajs.co/api/v1/products'
 
