@@ -96,14 +96,12 @@ import { useProductStore } from '../API/Store'
 import { useCartStore } from '../API/ShoppingCart'
 import { useFavouritesStore } from '../API/Favourites'
 import type { Product } from '@/types/ProductInterface'
-import { useRouter } from 'vue-router'
+import {useUrlFilters} from '../API/UrlFilters'
 
 const productStore = useProductStore()
 const cartStore = useCartStore()
 const favouritesStore = useFavouritesStore()
 
-//для url відображення
-const router = useRouter()
 
 // Initialize stores from localStorage
 onMounted(() => {
@@ -127,6 +125,7 @@ onMounted(async () => {
   watchURLParams()
 })
 
+
 const uniqueCategories = computed(() => {
   const categories = originalProducts.value.map(
     product => product.category.name,
@@ -137,17 +136,17 @@ const uniqueCategories = computed(() => {
 
 const handleFilters = () => {
   resetToOriginalProducts()
-  // Фільтрація за ім'ям
+  // фільтрація за ім'ям
   if (searchName.value) {
     productStore.filterProductsByName(searchName.value)
   }
 
-  // Фільтрація за категорією
+  // фільтрація за категорією
   if (selectedCategory.value) {
     productStore.filterProductsByCategory(selectedCategory.value)
   }
 
-  // Фільтрація за ціною
+  // фільтрація за ціною
   if (priceFrom.value && priceTo.value) {
     productStore.filterProductByPrice(
       Number(priceFrom.value),
@@ -159,29 +158,9 @@ const handleFilters = () => {
   updateQueryParams()
 }
 
-// функція для отримання параметрів з URL і встановлення фільтрів
-const loadFiltersFromURL = () => {
-  const queryParams = router.currentRoute.value.query
-
-  searchName.value = queryParams.name ? queryParams.name as string : ''
-  selectedCategory.value = queryParams.category ? queryParams.category as string : ''
-  priceFrom.value = queryParams.from ? queryParams.from as string : ''
-  priceTo.value = queryParams.to ? queryParams.to as string : ''
-
-  handleFilters()
-}
-
-// функція для слідкування за змінами в URL
-const watchURLParams = () => {
-  watch(() => router.currentRoute.value.query, (newQuery) => {
-    searchName.value = newQuery.name ? newQuery.name as string : ''
-    selectedCategory.value = newQuery.category ? newQuery.category as string : ''
-    priceFrom.value = newQuery.from ? newQuery.from as string : ''
-    priceTo.value = newQuery.to ? newQuery.to as string : ''
-
-    handleFilters()
-  })
-}
+const { loadFiltersFromURL, watchURLParams, updateQueryParams } = useUrlFilters(
+  searchName, selectedCategory, priceFrom, priceTo, handleFilters
+)
 
 const resetToOriginalProducts = () => {
   productStore.products = [...originalProducts.value]
@@ -228,18 +207,6 @@ const closePopup = () => {
   isPopupVisible.value = false
 }
 
-// функція для оновлення запитів у URL
-const updateQueryParams = () => {
-  router.replace({
-    path: '/',
-    query: {
-      name: searchName.value || undefined,
-      category: selectedCategory.value || undefined,
-      from: priceFrom.value || undefined,
-      to: priceTo.value || undefined,
-    },
-  })
-}
 </script>
 
 <style scoped>
