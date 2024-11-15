@@ -96,8 +96,7 @@ import { useProductStore } from '../API/Store'
 import { useCartStore } from '../API/ShoppingCart'
 import { useFavouritesStore } from '../API/Favourites'
 import type { Product } from '@/API/ProductInterface'
-import {  useRouter } from 'vue-router'
-
+import { useRouter } from 'vue-router'
 
 const productStore = useProductStore()
 const cartStore = useCartStore()
@@ -105,7 +104,6 @@ const favouritesStore = useFavouritesStore()
 
 //для url відображення
 const router = useRouter()
-
 
 // Initialize stores from localStorage
 onMounted(() => {
@@ -135,59 +133,25 @@ const uniqueCategories = computed(() => {
 
 })
 
-//закоментувла ці функції і зробила одну велику функцію handleFilters, передала її 4 рази у інпути в template
-//Одна функція об'єднує 3 і може фільтрувати відразу за трьома критеріями
-//watch за всім дивиться
-
-// const handleNameFilter = () => {
-//   resetToOriginalProducts()
-//   if (searchName.value) {
-//     productStore.filterProductsByName(searchName.value)
-//   }
-//   currentPage.value = 1
-//   updateQueryParams()
-// }
-
-// const handleCategoryFilter = () => {
-//   resetToOriginalProducts()
-//   if (selectedCategory.value) {
-//     productStore.filterProductsByCategory(selectedCategory.value)
-//   }
-//   currentPage.value = 1
-//   updateQueryParams()
-// }
-
-// const handlePriceFilter = () => {
-//   resetToOriginalProducts()
-//   if (priceFrom.value && priceTo.value) {
-//     productStore.filterProductByPrice(
-//       Number(priceFrom.value),
-//       Number(priceTo.value),
-//     )
-//   }
-//   currentPage.value = 1
-//   updateQueryParams()
-// }
-
 const handleFilters = () => {
   resetToOriginalProducts()
   // Фільтрація за ім'ям
-   if (searchName.value) {
-     productStore.filterProductsByName(searchName.value)
-   }
+  if (searchName.value) {
+    productStore.filterProductsByName(searchName.value)
+  }
 
   // Фільтрація за категорією
   if (selectedCategory.value) {
-     productStore.filterProductsByCategory(selectedCategory.value)
+    productStore.filterProductsByCategory(selectedCategory.value)
   }
 
   // Фільтрація за ціною
   if (priceFrom.value && priceTo.value) {
-     productStore.filterProductByPrice(
+    productStore.filterProductByPrice(
       Number(priceFrom.value),
       Number(priceTo.value),
-     )
-   }
+    )
+  }
 
   currentPage.value = 1
   updateQueryParams()
@@ -253,8 +217,6 @@ const updateQueryParams = () => {
     },
   })
 }
-
-
 </script>
 
 <style scoped>
