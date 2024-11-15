@@ -85,7 +85,7 @@
 
 <script setup lang="ts">
 import { useCartStore } from '@/API/ShoppingCart'
-import type { Product } from '@/API/ProductInterface'
+import type { Product } from '@/types/ProductInterface'
 
 const cartStore = useCartStore()
 

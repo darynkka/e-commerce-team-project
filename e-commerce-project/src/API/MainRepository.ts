@@ -1,4 +1,4 @@
-import type { Product, CartItem } from '@/API/ProductInterface'
+import type { Product, CartItem } from '@/types/ProductInterface'
 
 export class MainRepository {
   private favourites: CartItem[] = []

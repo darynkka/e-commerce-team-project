@@ -95,15 +95,13 @@ import CustomPopup from '@/components/CustomPopup.vue'
 import { useProductStore } from '../API/Store'
 import { useCartStore } from '../API/ShoppingCart'
 import { useFavouritesStore } from '../API/Favourites'
-import type { Product } from '@/API/ProductInterface'
-import { useRouter } from 'vue-router'
+import type { Product } from '@/types/ProductInterface'
+import {useUrlFilters} from '../API/UrlFilters'
 
 const productStore = useProductStore()
 const cartStore = useCartStore()
 const favouritesStore = useFavouritesStore()
 
-//для url відображення
-const router = useRouter()
 
 // Initialize stores from localStorage
 onMounted(() => {
@@ -123,30 +121,32 @@ onMounted(async () => {
   await productStore.fetchProducts(35)
   originalProducts.value = [...productStore.products]
 
-  //скидання фільтрів при оновленні сторінки
-  resetFilters()
+  loadFiltersFromURL()
+  watchURLParams()
 })
+
 
 const uniqueCategories = computed(() => {
   const categories = originalProducts.value.map(
     product => product.category.name,
   )
   return [...new Set(categories)]
+
 })
 
 const handleFilters = () => {
   resetToOriginalProducts()
-  // Фільтрація за ім'ям
+  // фільтрація за ім'ям
   if (searchName.value) {
     productStore.filterProductsByName(searchName.value)
   }
 
-  // Фільтрація за категорією
+  // фільтрація за категорією
   if (selectedCategory.value) {
     productStore.filterProductsByCategory(selectedCategory.value)
   }
 
-  // Фільтрація за ціною
+  // фільтрація за ціною
   if (priceFrom.value && priceTo.value) {
     productStore.filterProductByPrice(
       Number(priceFrom.value),
@@ -158,8 +158,9 @@ const handleFilters = () => {
   updateQueryParams()
 }
 
-// виклик функції при зміні будь-якого фільтру
-watch([searchName, selectedCategory, priceFrom, priceTo], handleFilters)
+const { loadFiltersFromURL, watchURLParams, updateQueryParams } = useUrlFilters(
+  searchName, selectedCategory, priceFrom, priceTo, handleFilters
+)
 
 const resetToOriginalProducts = () => {
   productStore.products = [...originalProducts.value]
@@ -206,18 +207,6 @@ const closePopup = () => {
   isPopupVisible.value = false
 }
 
-// функція для оновлення запитів у URL
-const updateQueryParams = () => {
-  router.replace({
-    path: '/',
-    query: {
-      name: searchName.value || undefined,
-      category: selectedCategory.value || undefined,
-      from: priceFrom.value || undefined,
-      to: priceTo.value || undefined,
-    },
-  })
-}
 </script>
 
 <style scoped>

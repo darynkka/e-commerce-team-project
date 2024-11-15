@@ -31,7 +31,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { Product } from '@/API/ProductInterface'
+import type { Product } from '@/types/ProductInterface'
 import { useFavouritesStore } from '@/API/Favourites'
 
 const props = defineProps<{

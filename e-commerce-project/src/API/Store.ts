@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { getAllProducts } from './MainService'
-import type { Product } from '@/API/ProductInterface'
+import type { Product } from '@/types/ProductInterface'
 
 const processProductData = (products: Product[]): Product[] => {
   //допоміжна функція, що містить логіку

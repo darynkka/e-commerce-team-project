@@ -42,7 +42,7 @@
 import { onMounted } from 'vue'
 import { useFavouritesStore } from '../API/Favourites'
 import { useCartStore } from '../API/ShoppingCart'
-import type { Product } from '@/API/ProductInterface'
+import type { Product } from '@/types/ProductInterface'
 
 // Ініціалізація магазину улюблених та кошика
 const favouritesStore = useFavouritesStore()
