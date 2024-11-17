@@ -96,17 +96,18 @@ import { useProductStore } from '../API/Store'
 import { useCartStore } from '../API/ShoppingCart'
 import { useFavouritesStore } from '../API/Favourites'
 import type { Product } from '@/types/ProductInterface'
-import {useUrlFilters} from '../API/UrlFilters'
+import { useUrlFilters } from '../API/UrlFilters'
 
 const productStore = useProductStore()
 const cartStore = useCartStore()
 const favouritesStore = useFavouritesStore()
 
-
 // Initialize stores from localStorage
 onMounted(() => {
   cartStore.loadFromStorage()
   favouritesStore.loadFromStorage()
+
+  watchURLParams()
 })
 
 const searchName = ref('')
@@ -120,18 +121,14 @@ const originalProducts = ref<Product[]>([])
 onMounted(async () => {
   await productStore.fetchProducts(35)
   originalProducts.value = [...productStore.products]
-
   loadFiltersFromURL()
-  watchURLParams()
 })
-
 
 const uniqueCategories = computed(() => {
   const categories = originalProducts.value.map(
     product => product.category.name,
   )
   return [...new Set(categories)]
-
 })
 
 const handleFilters = () => {
@@ -159,7 +156,11 @@ const handleFilters = () => {
 }
 
 const { loadFiltersFromURL, watchURLParams, updateQueryParams } = useUrlFilters(
-  searchName, selectedCategory, priceFrom, priceTo, handleFilters
+  searchName,
+  selectedCategory,
+  priceFrom,
+  priceTo,
+  handleFilters,
 )
 
 const resetToOriginalProducts = () => {
@@ -206,7 +207,6 @@ const handleAddToFavourites = (product: Product) => {
 const closePopup = () => {
   isPopupVisible.value = false
 }
-
 </script>
 
 <style scoped>
