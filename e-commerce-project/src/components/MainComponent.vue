@@ -105,6 +105,8 @@ const favouritesStore = useFavouritesStore()
 onMounted(() => {
   cartStore.loadFromStorage()
   favouritesStore.loadFromStorage()
+
+  watchURLParams()
 })
 
 const searchName = ref('')
@@ -118,9 +120,7 @@ const originalProducts = ref<Product[]>([])
 onMounted(async () => {
   await productStore.fetchProducts(35)
   originalProducts.value = [...productStore.products]
-
   loadFiltersFromURL()
-  watchURLParams()
 })
 
 const uniqueCategories = computed(() => {
